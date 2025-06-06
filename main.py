@@ -1,4 +1,4 @@
-from astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
+nufrom astrbot.api.event import filter, AstrMessageEvent, MessageEventResult
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
 
@@ -22,3 +22,39 @@ class MyPlugin(Star):
 
     async def terminate(self):
         """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""
+
+    @filter.command("mdthink")
+    async def mdthink(self, event: AstrMessageEvent):
+        """将思考过程输出为Markdown格式"""
+        from datetime import datetime
+        
+        # 获取当前时间和用户信息
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        user_name = event.get_sender_name()
+        message_str = event.message_str
+        
+        # 生成Markdown格式的思考过程
+        markdown = f"""# 思考过程 - {now}
+
+## 用户 {user_name} 的输入
+```
+{message_str}
+```
+
+## 分析过程
+1. 理解用户意图
+2. 分解任务需求
+3. 设计解决方案
+4. 验证方案可行性
+
+## 结论
+- 这是一个Markdown格式的思考过程示例
+- 可以根据实际需求扩展内容
+- 支持标准的Markdown语法
+
+```python
+# 示例代码
+print("Hello Markdown!")
+```
+"""
+        yield event.plain_result(markdown)
